@@ -12,12 +12,26 @@ Dep.prototype.notify = function() {
   })
 }
 
-function Watcher(fn) {
+function Watcher(vm, exp, fn) {
   this.fn = fn;
+  this.vm = vm;
+  this.exp = exp;
+  Dep.target = this;
+  let val = vm;
+  let arr = exp.split('.');
+  arr.forEach(k => {
+  val = val[k];
+  })
+  Dep.target = null;
 }
 
 Watcher.prototype.update = function() {
-  this.fn();
+  let val = this.vm;
+  let arr = this.exp.split('.');
+  arr.forEach(k => {
+    val = val[k];
+  })
+  this.fn(val);
 }
 
 class Mvvm {
@@ -46,6 +60,7 @@ class Mvvm {
 
   observe(data) {
     if (typeof data !== 'object') return;
+    let dep = new Dep();
     const _this = this;
     for(let key in data) {
       let val = data[key];
@@ -53,12 +68,14 @@ class Mvvm {
       Object.defineProperty(data, key, ({
         enumerable: true,
         get() {
+          Dep.target && dep.addSub(Dep.target); // [watcher]
           return val;
         },
         set(newVal) {
           if (newVal !== val) {
             val = newVal;
             _this.observe(val);
+            dep.notify();
           }
         },
       }))
@@ -80,13 +97,14 @@ class Mvvm {
       const reg = /\{\{(.+)\}\}/;
       const text = node.textContent;
       if (node.nodeType === 3 && reg.test(text)) {
-        // console.log(RegExp.$1);
         const arr = RegExp.$1.trim().split('.');
         let val = vm;
-        arr.forEach(e => {
+        arr.forEach(e => { // 循环完之后是 this.a.b
           val = val[e];
         });
-        console.log(val)
+        new Watcher(vm, RegExp.$1, function(newVal) {
+          node.textContent = text.replace(reg, newVal);
+        })
         node.textContent = text.replace(reg, val);
       }
       if (node.hasChildNodes()) {
