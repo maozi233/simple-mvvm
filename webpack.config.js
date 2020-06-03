@@ -3,14 +3,14 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/mvvm.js',
+  entry: './src/index.js',
   devtool: 'cheap-module-eval-source-map',
   devServer: {
     contentBase: './dist',
     open: true
   },
   plugins: [new HtmlWebpackPlugin({
-    template: 'src/mvvm.html'
+    template: 'src/index.html'
   })],
   output: {
     filename: 'index.js',
