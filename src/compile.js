@@ -29,7 +29,20 @@ export class Compile {
     const childNodes = fragment.childNodes;
     Array.from(childNodes).forEach(node => {
       if (this.isElement(node)) {
-        // console.log('编译元素')
+        // 判断自定义的指令集
+        Array.from(node.attributes).forEach(attr => {
+          const attrName = attr.name;
+          const exp = attr.value;
+          if (this.isDirective(attrName)) {
+            // v-text
+            const dir = attrName.substring(2); // 取出v-后面的字符串
+            // 执行更新
+            this[dir] && this[dir](node, this.$vm, exp);
+          }
+          if (this.isEvent(attrName)) {
+
+          }
+        })
       } else if (this.isInterpolation(node)) {
         this.compileText(node);
       }
@@ -37,6 +50,10 @@ export class Compile {
         this.compile(node);
       }
     })
+  }
+
+  text(node, vm, exp) {
+    this.update(node, vm, exp, 'text')
   }
 
   compileText(node) {
@@ -55,6 +72,14 @@ export class Compile {
 
   textUpdater(node, value) {
     node.textContent = value;
+  }
+
+  isDirective(attr) {
+    return attr.startsWith('v-');
+  }
+
+  isEvent(attr) {
+    return attr.startsWith('@');
   }
 
   isElement(node) {
