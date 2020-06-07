@@ -11,11 +11,13 @@
     <p>name: {{name}}</p>
     <p>age: {{age}}</p>
     <p v-text="age"></p>
+    <input v-model="name">
     <button @click="changeAge">老了啊</button>
     <div>
       <p>father: {{family.father}}</p>
       <p>mother: {{family.mother}}</p>
     </div>
+    <div v-html="html"></div>
   </div>
 </body>
 </html>

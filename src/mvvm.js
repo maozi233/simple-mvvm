@@ -31,6 +31,7 @@ export class Vue {
     const dep = new Dep();
     Object.defineProperty(obj, key, {
       get() {
+        // console.log(`dep 将 ${key}添加到了队列中`)
         Dep.target && dep.addDep(Dep.target);
         return val;
       },

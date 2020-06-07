@@ -8,7 +8,8 @@ const app = new Vue({
     family: {
       father: '文全',
       mother: '翠平'
-    }
+    },
+    html: '<p>测试html</p>'
   },
   created() {
     this.name = 'yaowei test';

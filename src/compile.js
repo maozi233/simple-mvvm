@@ -36,9 +36,9 @@ export class Compile {
           // key (name或者age)
           const exp = attr.value;
           if (this.isDirective(attrName)) {
-            // v-text
+            // v-text v-model
             const dir = attrName.substring(2); // 取出v-后面的字符串
-            // 执行更新
+            // 执行更新 this.model() this.text()
             this[dir] && this[dir](node, this.$vm, exp);
           }
           if (this.isEvent(attrName)) {
@@ -56,6 +56,22 @@ export class Compile {
     })
   }
 
+  // 双向绑定处理器
+  model(node, vm, exp) {
+    // 指定input的value值
+    this.update(node, vm, exp, 'model');
+
+    // 更新值触发setter
+    node.addEventListener("input", e => {
+      vm[exp] = e.target.value;
+    })
+  }
+
+  modelUpdater(node, value) {
+    node.value = value;
+  }
+
+  // @事件处理器
   eventHandler(node, vm, exp, dir) {
     const fn = vm.$options.methods && vm.$options.methods[exp];
     if (dir === 'click' && fn) {
@@ -79,6 +95,7 @@ export class Compile {
     // updateFn && updateFn(node, vm[exp]);
     // 依赖收集
     new Watcher(vm, exp, function(val) {
+      console.log(`new watcher(${exp})`);
       updateFn && updateFn(node, val);
     })
   }
