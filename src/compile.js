@@ -71,6 +71,14 @@ export class Compile {
     node.value = value;
   }
 
+  html(node, vm, exp) {
+    this.update(node, vm, exp, 'html');
+  }
+
+  htmlUpdater(node, value) {
+    node.innerHTML = value;
+  }
+
   // @事件处理器
   eventHandler(node, vm, exp, dir) {
     const fn = vm.$options.methods && vm.$options.methods[exp];

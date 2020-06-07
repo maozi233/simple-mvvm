@@ -9,7 +9,7 @@ const app = new Vue({
       father: '文全',
       mother: '翠平'
     },
-    html: '<p>测试html</p>'
+    html: '<p>测试v-html</p>'
   },
   created() {
     this.name = 'yaowei test';
