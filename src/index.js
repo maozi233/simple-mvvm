@@ -11,10 +11,14 @@ const app = new Vue({
     }
   },
   created() {
-    console.log(this)
-    this.$data.name = 'yaowei test';
-    this.$data.family.father = '姚文全';
+    this.name = 'yaowei test';
+    this.family.father = '姚文全';
   },
+  methods: {
+    changeAge() {
+      this.age = 26;
+    }
+  }
 });
 
-// console.log(app.$data);
+console.log(app);

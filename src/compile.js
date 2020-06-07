@@ -32,6 +32,7 @@ export class Compile {
         // 判断自定义的指令集
         Array.from(node.attributes).forEach(attr => {
           const attrName = attr.name;
+          // key (name或者age)
           const exp = attr.value;
           if (this.isDirective(attrName)) {
             // v-text
@@ -40,7 +41,9 @@ export class Compile {
             this[dir] && this[dir](node, this.$vm, exp);
           }
           if (this.isEvent(attrName)) {
-
+            // @click
+            const dir = attrName.substring(1);
+            this.eventHandler(node, this.$vm, exp, dir)
           }
         })
       } else if (this.isInterpolation(node)) {
@@ -50,6 +53,14 @@ export class Compile {
         this.compile(node);
       }
     })
+  }
+
+  eventHandler(node, vm, exp, dir) {
+    const fn = vm.$options.methods && vm.$options.methods[exp];
+    if (dir === 'click' && fn) {
+      node.removeEventListener('click', fn)
+      node.addEventListener('click', fn.bind(vm))
+    }
   }
 
   text(node, vm, exp) {
