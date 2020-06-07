@@ -1,4 +1,5 @@
 import { Watcher } from './dep';
+import { getValue } from './utils';
 
 export class Compile {
   constructor(el ,vm) {
@@ -74,7 +75,8 @@ export class Compile {
   // 更新函数
   update(node, vm, exp, dir) {
     const updateFn = this[`${dir}Updater`];
-    updateFn && updateFn(node, vm[exp]);
+    updateFn && updateFn(node, getValue(vm, exp));
+    // updateFn && updateFn(node, vm[exp]);
     // 依赖收集
     new Watcher(vm, exp, function(val) {
       updateFn && updateFn(node, val);
